@@ -3,23 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Phase { battle, attack,charge,guard};
+
 public class GameController : MonoBehaviour {
 
+    //メニューボタン
+    GameObject menuUi;
     //連打ボタン
     GameObject button;
     //リトライボタン
     GameObject restart;
-    GameObject text;
+    GameObject rendaText;
+    //連打あとのテクスト
     Text instruct;
+    //現在のパワー
+    GameObject powerText;
+    Text pwrText;
     //連打出来る
     bool gamestart;
+    //バトルメニューの表示
+    bool battleStart;
     //何回押した
     int count;
+    //パワー (攻撃)
+    int power;
+
     private void Awake()
     {
         button = GameObject.Find("Renda");
         restart = GameObject.Find("restart");
-        text = GameObject.Find("Instruct");
+        rendaText = GameObject.Find("Instruct");
+        powerText = GameObject.Find("PowerText");
+        menuUi = GameObject.Find("MenuUi");
+
     }
 
     // Use this for initialization
@@ -27,14 +43,29 @@ public class GameController : MonoBehaviour {
         restart.SetActive(false);
         gamestart = false;
         button.GetComponent<Button>().interactable = false;
-        text.GetComponent<Text>().text = "ready";
-        instruct = text.GetComponent<Text>();
-        StartCoroutine(GameStart());
-	}
+        rendaText.GetComponent<Text>().text = "ready";
+        instruct = rendaText.GetComponent<Text>();
+        pwrText = powerText.GetComponent<Text>();
+        battleStart = false;
+        button.gameObject.SetActive(false);
+        power =10;
 
-    //ゲームを始まる
-    private IEnumerator GameStart()
+    }
+
+    void StartBattle(Phase phase)
     {
+        button.gameObject.SetActive(true);
+        StartCoroutine(RendaStart(phase));
+    }
+    public void ChrgStart()
+    {
+        StartCoroutine(RendaStart(Phase.charge));
+    }
+    //ゲームを始まる
+    private IEnumerator RendaStart(Phase phase)
+    {
+        menuUi.SetActive(false);
+        button.gameObject.SetActive(true);
         instruct.text = "3";
         yield return new WaitForSeconds(1.0f);
         instruct.text = "2";
@@ -45,22 +76,35 @@ public class GameController : MonoBehaviour {
         gamestart = true;
         yield return new WaitForSeconds(5.0f);
         gamestart = false;
-        instruct.text = "戦闘力:\n " + count.ToString();
-        restart.SetActive(true);
+        //パワーを上げる
+        if(phase == Phase.charge)
+        {
+            count *= 100;
+            instruct.fontSize = 20;
+            instruct.text = "パワーが\n" + count.ToString() + "アップ";
+            power += count;
+            pwrText.text = power.ToString(); 
+            count = 0;
+        }
+        yield return new WaitForSeconds(5.0f);
+        instruct.fontSize = 50;
+        button.gameObject.SetActive(false);
+        menuUi.SetActive(true);
+
     }
 	
     //ボタン押せばcount増やす
     public void PushButton()
     {
-        count += 200;
+        count += 1;
     }
     //リスタートゲーム
-    public void Restart()
-    {
-        count = 0;
-        StartCoroutine(GameStart());
-        restart.SetActive(false);
-    }
+    //public void Restart()
+    //{
+    //    count = 0;
+    //    StartCoroutine(RendaStart());
+    //    restart.SetActive(false);
+    //}
 
     // Update is called once per frame
     void Update () {
