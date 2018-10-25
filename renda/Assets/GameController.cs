@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum Phase { battle, attack,charge,guard};
+public enum Phase { battle, attack,charge,guard,special};
 
 public class GameController : MonoBehaviour {
 
+    GameObject player1;
+    GameObject player2;
+    int player;
     //メニューボタン
     GameObject menuUi;
     //連打ボタン
@@ -24,9 +27,9 @@ public class GameController : MonoBehaviour {
     //バトルメニューの表示
     bool battleStart;
     //何回押した
-    int count;
-    //パワー (攻撃)
-    int power;
+    int[] count = new int[2];
+
+   
 
     private void Awake()
     {
@@ -35,6 +38,8 @@ public class GameController : MonoBehaviour {
         rendaText = GameObject.Find("Instruct");
         powerText = GameObject.Find("PowerText");
         menuUi = GameObject.Find("MenuUi");
+        player1 = GameObject.Find("player1");
+        player2 = GameObject.Find("player2");
 
     }
 
@@ -48,8 +53,6 @@ public class GameController : MonoBehaviour {
         pwrText = powerText.GetComponent<Text>();
         battleStart = false;
         button.gameObject.SetActive(false);
-        power =10;
-
     }
 
     void StartBattle(Phase phase)
@@ -60,6 +63,19 @@ public class GameController : MonoBehaviour {
     public void ChrgStart()
     {
         StartCoroutine(RendaStart(Phase.charge));
+    }
+    public void Guard()
+    {
+        StartCoroutine(RendaStart(Phase.guard));
+    }
+    public void Finish()
+    {
+        StartCoroutine(RendaStart(Phase.special));
+    }
+
+    public void Attack()
+    {
+        StartCoroutine(RendaStart(Phase.attack));
     }
     //ゲームを始まる
     private IEnumerator RendaStart(Phase phase)
@@ -79,12 +95,52 @@ public class GameController : MonoBehaviour {
         //パワーを上げる
         if(phase == Phase.charge)
         {
-            count *= 100;
-            instruct.fontSize = 20;
-            instruct.text = "パワーが\n" + count.ToString() + "アップ";
-            power += count;
-            pwrText.text = power.ToString(); 
-            count = 0;
+            if (player == 1)
+            {
+                count[0] *= 100;
+                instruct.fontSize = 20;
+                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player1.GetComponent<player>().power += count[0];
+                pwrText.text = player1.GetComponent<player>().power.ToString();
+                count[0] = 0;
+            }
+            else
+            {
+                count[1] *= 100;
+                instruct.fontSize = 20;
+                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player2.GetComponent<player>().power += count[0];
+                pwrText.text = player2.GetComponent<player>().power.ToString();
+                count[1] = 0;
+            }
+           
+        }else if(phase == Phase.guard)
+        {
+            if (player == 1)
+            {
+                count[0] *= 100;
+                instruct.fontSize = 20;
+                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player1.GetComponent<player>().power += count[0];
+                pwrText.text = player1.GetComponent<player>().power.ToString();
+                count[0] = 0;
+            }
+            else
+            {
+                count[1] *= 100;
+                instruct.fontSize = 20;
+                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player2.GetComponent<player>().power += count[0];
+                pwrText.text = player2.GetComponent<player>().power.ToString();
+                count[1] = 0;
+            }
+        }else if (phase == Phase.attack)
+        {
+
+        }
+        else if (phase == Phase.special)
+        {
+
         }
         yield return new WaitForSeconds(5.0f);
         instruct.fontSize = 50;
@@ -96,16 +152,17 @@ public class GameController : MonoBehaviour {
     //ボタン押せばcount増やす
     public void PushButton()
     {
-        count += 1;
+        if(player == 1)
+        {
+            count[0] += 1;
+        }
+        else
+        {
+            count[1] += 1;
+        }
+       
     }
-    //リスタートゲーム
-    //public void Restart()
-    //{
-    //    count = 0;
-    //    StartCoroutine(RendaStart());
-    //    restart.SetActive(false);
-    //}
-
+  
     // Update is called once per frame
     void Update () {
         //リトライボタンを押せるかどうか
