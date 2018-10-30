@@ -365,14 +365,14 @@ MonoBehaviour:
     width: 997
     height: 473
   m_SceneLighting: 1
-  lastFramingTime: 3886.1122276426304
+  lastFramingTime: 2410.5536987879236
   m_2DMode: 1
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 248.04999, y: 228.74998, z: 0}
+    m_Target: {x: 99.5, y: 393.09998, z: 0}
     speed: 2
-    m_Value: {x: 248.04999, y: 228.74998, z: 0}
+    m_Value: {x: 99.5, y: 393.09998, z: 0}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -399,9 +399,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 704.23566
+    m_Target: 228.29706
     speed: 2
-    m_Value: 704.23566
+    m_Value: 228.29706
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -483,23 +483,23 @@ MonoBehaviour:
     height: 926
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: a8fdfeff
-    m_LastClickedID: -66136
-    m_ExpandedIDs: a8fdfeff7a24ffffca45ffff9257ffffa857ffffa88bffff3a8fffffb6fbffff00000000202600002a2600006e260000
+    m_SelectedIDs: 82250000
+    m_LastClickedID: 9602
+    m_ExpandedIDs: d4fbffff00000000be250000142600003c26000046260000622600007a2600007e2600009e260000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: Background
+      m_OriginalName: Background
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 9602
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 9}
     m_SearchString: 
@@ -551,13 +551,13 @@ MonoBehaviour:
   m_LastFolders:
   - Assets
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: C:\Users\student\Desktop\renda-master\renda-master\renda
+  m_LastProjectPath: C:\Users\student\Documents\GitHub\renda\renda
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 46250000
-    m_LastClickedID: 9542
-    m_ExpandedIDs: 000000004625000000ca9a3bffffff7f
+    m_SelectedIDs: f8240000
+    m_LastClickedID: 9464
+    m_ExpandedIDs: 00000000f8240000ffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -585,7 +585,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000046250000
+    m_ExpandedIDs: 00000000f8240000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

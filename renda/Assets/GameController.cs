@@ -7,8 +7,8 @@ public enum Phase { battle, attack,charge,guard,special};
 
 public class GameController : MonoBehaviour {
 
-    GameObject player1;
-    GameObject player2;
+    public GameObject player1;
+    public GameObject player2;
     int player;
     //メニューボタン
     GameObject menuUi;
@@ -21,7 +21,9 @@ public class GameController : MonoBehaviour {
     Text instruct;
     //現在のパワー
     GameObject powerText;
+    GameObject powerText2;
     Text pwrText;
+    Text pwrText2;
     //連打出来る
     bool gamestart;
     //バトルメニューの表示
@@ -37,20 +39,26 @@ public class GameController : MonoBehaviour {
         restart = GameObject.Find("restart");
         rendaText = GameObject.Find("Instruct");
         powerText = GameObject.Find("PowerText");
+        powerText2 = GameObject.Find("PowerText2");
         menuUi = GameObject.Find("MenuUi");
-        player1 = GameObject.Find("player1");
-        player2 = GameObject.Find("player2");
+        player1 = GameObject.Find("Player1");
+        player2 = GameObject.Find("Player2");
 
     }
 
     // Use this for initialization
     void Start () {
-        restart.SetActive(false);
+        player = 1;
+        count[0] = 0;
+        count[1] = 0;
+
+        //restart.SetActive(false);
         gamestart = false;
         button.GetComponent<Button>().interactable = false;
         rendaText.GetComponent<Text>().text = "ready";
         instruct = rendaText.GetComponent<Text>();
         pwrText = powerText.GetComponent<Text>();
+        pwrText2= powerText2.GetComponent<Text>();
         battleStart = false;
         button.gameObject.SetActive(false);
     }
@@ -93,24 +101,26 @@ public class GameController : MonoBehaviour {
         yield return new WaitForSeconds(5.0f);
         gamestart = false;
         //パワーを上げる
+        if (Input.GetKeyUp("s")) { pwrText.text = "1111"; }
         if(phase == Phase.charge)
         {
             if (player == 1)
             {
                 count[0] *= 100;
                 instruct.fontSize = 20;
-                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                instruct.text = "パワーが\n" + count[0].ToString() + "アップ";
                 player1.GetComponent<player>().power += count[0];
                 pwrText.text = player1.GetComponent<player>().power.ToString();
+                Debug.Log(player1.GetComponent<player>().power);
                 count[0] = 0;
             }
             else
             {
                 count[1] *= 100;
                 instruct.fontSize = 20;
-                instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                instruct.text = "パワーが\n" + count[0].ToString() + "アップ";
                 player2.GetComponent<player>().power += count[0];
-                pwrText.text = player2.GetComponent<player>().power.ToString();
+                pwrText2.text = player2.GetComponent<player>().power.ToString();
                 count[1] = 0;
             }
            
@@ -121,8 +131,10 @@ public class GameController : MonoBehaviour {
                 count[0] *= 100;
                 instruct.fontSize = 20;
                 instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                Debug.Log(player1.GetComponent<player>().power);
                 player1.GetComponent<player>().power += count[0];
-                pwrText.text = player1.GetComponent<player>().power.ToString();
+                int temp = player1.GetComponent<player>().power;
+                pwrText.text = temp.ToString();
                 count[0] = 0;
             }
             else
@@ -136,7 +148,22 @@ public class GameController : MonoBehaviour {
             }
         }else if (phase == Phase.attack)
         {
-
+            if (player == 1)
+            {
+                count[0] *= 100;
+                instruct.fontSize = 20;
+                //instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player2.GetComponent<player>().TakeDamage(player1.GetComponent<player>().power + count[0]);
+                count[0] = 0;
+            }
+            else
+            {
+                count[1] *= 100;
+                instruct.fontSize = 20;
+                //instruct.text = "パワーが\n" + count.ToString() + "アップ";
+                player1.GetComponent<player>().TakeDamage(player2.GetComponent<player>().power + count[0]);
+                count[1] = 0;
+            }
         }
         else if (phase == Phase.special)
         {
@@ -155,6 +182,7 @@ public class GameController : MonoBehaviour {
         if(player == 1)
         {
             count[0] += 1;
+            Debug.Log(count[0]);
         }
         else
         {
@@ -173,6 +201,6 @@ public class GameController : MonoBehaviour {
         {
             button.GetComponent<Button>().interactable = false;
         }
-		
-	}
+
+    }
 }
