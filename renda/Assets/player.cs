@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class player : MonoBehaviour {
     //パワー (攻撃)
-    public int power;
+    public float power;
     //シールド(ダメージを増減)
-    public int shield;
+    public float shield;
     public int playerNumber;
     public float hp;
     public float hpafter;
@@ -15,7 +15,7 @@ public class player : MonoBehaviour {
     public Slider hpSlider;
     public GameObject gamecontroller;
     bool takedamage;
-    int damage;
+    public float damage;
 
     // Use this for initialization
     private void Awake()
@@ -37,9 +37,11 @@ public class player : MonoBehaviour {
         hp = 100000;
         hpSlider.maxValue = hp;
         hpSlider.value = hp;
+        shield = 0;
 
     }
    
+    //uiにHPが受けた時下がる
     private void Hpreduce()
     {
        if (hp >hpafter )
@@ -55,16 +57,26 @@ public class player : MonoBehaviour {
             hp = hpafter;
             hpSlider.value = hpafter;
             hpafter = 0;
+            if (hp == 0) SceneManager.LoadScene("GameOver");
         }
         
     }
+    //パワーを下げる
+    // power マイナス　100%-連打% *power
+    public void ReducePower(float percent)
+    {
+        power -= (((100-percent) / 100) * power);
+    }
 
+    //ダメージ受ける
     public void TakeDamage(int dmg)
     {
-        damage = dmg;
+        damage = dmg - shield;        
+        if (damage < 0) damage = 0;        
         takedamage = true;
-        Debug.Log(damage);
+        Debug.Log( "player" + playerNumber+ "take "+ damage);
         hpafter = hp - damage;
+        shield = 0;
     }
 
     // Update is called once per frame
