@@ -92,6 +92,7 @@
     <Compile Include="Assets\Script\SaveSystem.cs" />
     <Compile Include="Assets\Script\SetLocalPlayer.cs" />
     <Compile Include="Assets\Script\player.cs" />
+    <Compile Include="Assets\Test.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-public class player : MonoBehaviour {
+using UnityEngine.Networking;
+public class player : NetworkBehaviour {
     //パワー (攻撃)
     public float power;
     //シールド(ダメージを増減)
@@ -20,7 +21,7 @@ public class player : MonoBehaviour {
 
     private void Awake()
     {
-        playerNumber = GetComponent<SetLocalPlayer>().playerNumber;
+        //playerNumber = GetComponent<SetLocalPlayer>().playerNumber;
         gamecontroller = GameObject.Find("GameController");
         if (playerNumber == 1)
         {
