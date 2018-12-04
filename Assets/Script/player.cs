@@ -15,10 +15,21 @@ public class player : NetworkBehaviour {
     public GameObject hpsl;
     public Slider hpSlider;
     public GameObject gamecontroller;
+	//マルチの時
+	//public GameObject playerNetId;
     bool takedamage;
     public float damage;
+	public bool ready;
+	//コマンドセレクトのTEXT
+	public GameObject actionText ;
+	public GameObject powerText;
+    public Text pwrTxt;
+    public GameObject netWorkId;
 
-
+    public void SetNetworkGameobject(GameObject go)
+    {
+        netWorkId = go;
+    }
     private void Awake()
     {
         //playerNumber = GetComponent<SetLocalPlayer>().playerNumber;
@@ -35,7 +46,7 @@ public class player : NetworkBehaviour {
     }
     void Start()
     {
-
+        pwrTxt = powerText.GetComponent<Text>();
         hpSlider = hpsl.GetComponent<Slider>();
         power = 10;
         hp = 50000;
@@ -44,7 +55,15 @@ public class player : NetworkBehaviour {
         shield = 0;
 
     }
-
+	
+	public void GetReady(bool state)
+	{
+		ready = netWorkId.GetComponent<SetLocalPlayer> ().CmdGetReady();
+	}
+	public void SetReady(bool state)
+	{
+        netWorkId.GetComponent<SetLocalPlayer>().CmdSetReady(state);
+	}
 
 
     //uiにHPが受けた時下がる

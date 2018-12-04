@@ -9,30 +9,34 @@ public enum Gamemode {single, multi };
 public class GameController : MonoBehaviour {
 
 
-    public Gamemode mode = Gamemode.single;
+	public Gamemode mode;
     public GameObject player1;
+  
     public GameObject player2;
     int player;
+
     //メニューボタン
-    GameObject menuUi;
+	[SerializeField]
+	private GameObject menuUi = null;
     //連打ボタン
-    GameObject button;
+	[SerializeField]
+	private GameObject button = null;
     //リトライボタン
+
     GameObject restart;
-    GameObject rendaText;
+	[SerializeField]
+	private GameObject rendaText = null;
     //連打あとのテクスト
     Text instruct;
     //現在のパワー
-    GameObject powerText;
-    GameObject powerText2;
 
-    //コマンドセレクトのTEXT
-    GameObject actionText1;
-    GameObject actionText2;
+
+    
+    
 
     //パワーテクスト
-    Text pwrText;
-    Text pwrText2;
+   
+
     //セーブ
     GameObject saveSystem;
     //連打出来る
@@ -42,6 +46,16 @@ public class GameController : MonoBehaviour {
     //プレイヤーがコマンド入力しましたか
     public bool ready1, ready2;
     bool allready;
+	bool battleDone =false;
+	bool startready;
+	public GameObject actionText1;
+	public GameObject actionText2;
+    //画面の
+    public GameObject actionText;
+    public GameObject HpSlider;
+
+  
+
 
 
 
@@ -49,39 +63,35 @@ public class GameController : MonoBehaviour {
 
     private void Awake()
     {
-        button = GameObject.Find("Renda");
-        restart = GameObject.Find("restart");
-        rendaText = GameObject.Find("Instruct");
-        powerText = GameObject.Find("PowerText");
-        powerText2 = GameObject.Find("PowerText2");
         menuUi = GameObject.Find("MenuUi");
         player1 = GameObject.Find("Player1");
-        player2 = GameObject.Find("Player2");
-        actionText1 = GameObject.Find("Action");
-        actionText2 = GameObject.Find("Action2");
-        saveSystem = GameObject.Find("SaveSystem");
+		player2 = GameObject.Find ("Player2");
+        //actionText2 = GameObject.Find("Action2");
+       //saveSystem = GameObject.Find("SaveSystem");
+		startready = true;
+		mode = Gamemode.multi;
     }
 
     // Use this for initialization
     void Start () {
-        if(saveSystem != null)
-        {
-            mode = saveSystem.GetComponent<SaveSystem>().mode;
-        }
-        
+//        if(saveSystem != null)
+//        {
+//            mode = saveSystem.GetComponent<SaveSystem>().mode;
+//        }
         player = 1;
         count[0] = 0;
         count[1] = 0;
-        actionText1.GetComponent<Text>().enabled = false;
-        actionText2.GetComponent<Text>().enabled = false;
+		actionText1.GetComponent<Text>().enabled = false;
+		actionText2.GetComponent<Text>().enabled = false;
+        actionText.GetComponent<Text>().enabled = false;
         //restart.SetActive(false);
         gamestart = false;
         button.GetComponent<Button>().interactable = false;
         rendaText.GetComponent<Text>().text = "ready";
         instruct = rendaText.GetComponent<Text>();
-        pwrText = powerText.GetComponent<Text>();
-        pwrText2= powerText2.GetComponent<Text>();
         button.gameObject.SetActive(false);
+		ready1 = false;
+		ready2 = false;
     }
 
     void StartBattle(Phase phase)
@@ -154,7 +164,7 @@ public class GameController : MonoBehaviour {
             instruct.fontSize = 20;
             //instruct.text = "パワーが\n" + count[1].ToString() + "アップ";
             player2.GetComponent<player>().power += count[1];
-            pwrText2.text = player2.GetComponent<player>().power.ToString();
+            player2.GetComponent<player>().pwrTxt.text = player2.GetComponent<player>().power.ToString();
             count[1] = 0;
            
         }//ガード
@@ -182,7 +192,7 @@ public class GameController : MonoBehaviour {
             Debug.Log(Dmg);
             count[1] = 0;
             player2.GetComponent<player>().ReducePower(percent);
-            pwrText2.text = ((int)player2.GetComponent<player>().power).ToString();            
+            player2.GetComponent<player>().pwrTxt.text = ((int)player2.GetComponent<player>().power).ToString();            
         }
     }
 
@@ -209,6 +219,8 @@ public class GameController : MonoBehaviour {
             if (player == 1)
             {
                 ready1 = true;
+				if (mode == Gamemode.multi)
+					player1.GetComponent<player> ().SetReady (true);
                 while (allready == false)
                 {
                     yield return null;
@@ -217,9 +229,10 @@ public class GameController : MonoBehaviour {
                 instruct.fontSize = 20;
                 instruct.text = "パワーが\n" + count[0].ToString() + "アップ";
                 player1.GetComponent<player>().power += count[0];
-                pwrText.text = player1.GetComponent<player>().power.ToString();
+                player1.GetComponent<player>().pwrTxt.text = player1.GetComponent<player>().power.ToString();
                 Debug.Log(player1.GetComponent<player>().power);
                 count[0] = 0;
+				battleDone = true;
             }
             else
             {
@@ -232,7 +245,7 @@ public class GameController : MonoBehaviour {
                 instruct.fontSize = 20;
                 instruct.text = "パワーが\n" + count[1].ToString() + "アップ";
                 player2.GetComponent<player>().power += count[0];
-                pwrText2.text = player2.GetComponent<player>().power.ToString();
+                player1.GetComponent<player>().pwrTxt.text = player2.GetComponent<player>().power.ToString();
                 count[1] = 0;
             }           
         }else if(phase == Phase.guard) //ガードの場合
@@ -316,7 +329,7 @@ public class GameController : MonoBehaviour {
                 Debug.Log(Dmg);
                 count[0] = 0;
                 player1.GetComponent<player>().ReducePower(percent);
-                pwrText.text = ((int)player1.GetComponent<player>().power).ToString();
+                player1.GetComponent<player>().pwrTxt.text = ((int)player1.GetComponent<player>().power).ToString();
 
             }
             else
@@ -338,16 +351,21 @@ public class GameController : MonoBehaviour {
                     player1.GetComponent<player>().TakeDamage(Dmg);
                     Debug.Log(Dmg);
                     count[1] = 0;
-                    player1.GetComponent<player>().ReducePower(percent);
-                    pwrText.text = ((int)player2.GetComponent<player>().power).ToString();
+                    player2.GetComponent<player>().ReducePower(percent);
+                    player2.GetComponent<player>().pwrTxt.text = ((int)player2.GetComponent<player>().power).ToString();
                 }
             }
         }
+		while (battleDone == false)
+		{
+			yield return null;
+		}
         StartCoroutine(HideCommand());
         yield return new WaitForSeconds(5.0f);
         instruct.fontSize = 50;
         button.gameObject.SetActive(false);
         menuUi.SetActive(true);
+		battleDone = false;
     }
 	
     //ボタン押せばcount増やす
@@ -372,58 +390,58 @@ public class GameController : MonoBehaviour {
     }
   
     // Update is called once per frame
-    void Update () {
-        if(mode == Gamemode.single)
-        {
-            if(ready1 == true)
-            {
-                int random;
-                if (player2.GetComponent<player>().power < 10000 &&player2.GetComponent<player>().power >5000)
-                {
-                    if(player1.GetComponent<player>().power < 6000)
-                    {
-                        random = Random.Range(1, 2);
-                    }
-                    else
-                    {
-                        random = Random.Range(1, 3);
-                    }                    
-                    count[1] = Random.Range(20, 40);
-                    Debug.Log(random +" npc");
-                    AiBattle(random);
-                }
-                else if (player2.GetComponent<player>().power < 5000)
-                {
-                    count[1] = Random.Range(40, 60);
-                    random = 2;
-                    Debug.Log(random + "npc");
-                    AiBattle(random);
-                }
-                else
-                {
-                    if (player1.GetComponent<player>().power < 6000)
-                    {
-                        random = Random.Range(1, 4);
-                        if(random == 3)
-                        {
-                            random = Random.Range(1, 2);
-                        }
-                    }
-                    else
-                    {
-                        random = Random.Range(1, 4);
-                    }
-                    random = Random.Range(1, 4);
-                    count[1] = Random.Range(25, 60);
-                    Debug.Log(random+ "npc");
-                    AiBattle(random);
-                }                
-                ready2 = true;
-            }
-        }
+    void Update () 
+	{
+		if (startready) {
+			startready = false;
+		}
+
+		if (mode == Gamemode.single) {
+			if (ready1 == true) {
+				int random;
+				if (player2.GetComponent<player> ().power < 10000 && player2.GetComponent<player> ().power > 5000) {
+					if (player1.GetComponent<player> ().power < 6000) {
+						random = Random.Range (1, 2);
+					} else {
+						random = Random.Range (1, 3);
+					}                    
+					count [1] = Random.Range (20, 40);
+					Debug.Log (random + " npc");
+					AiBattle (random);
+				} else if (player2.GetComponent<player> ().power < 5000) {
+					count [1] = Random.Range (40, 60);
+					random = 2;
+					Debug.Log (random + "npc");
+					AiBattle (random);
+				} else {
+					if (player1.GetComponent<player> ().power < 6000) {
+						random = Random.Range (1, 4);
+						if (random == 3) {
+							random = Random.Range (1, 2);
+						}
+					} else {
+						random = Random.Range (1, 4);
+					}
+					random = Random.Range (1, 4);
+					count [1] = Random.Range (25, 60);
+					Debug.Log (random + "npc");
+					AiBattle (random);
+				}                
+				ready2 = true;
+			} 
+		}else 
+		{
+			if (ready1 == true)
+			{
+				
+			}
+		}
         if (ready1 && ready2)
         {
             allready = true;
+			if (mode == Gamemode.multi) {
+				player1.GetComponent<player> ().SetReady (false);
+			}
             ready1 = false;
             ready2 = false;
         }
@@ -438,3 +456,4 @@ public class GameController : MonoBehaviour {
 
     }
 }
+
